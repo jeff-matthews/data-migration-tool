@@ -187,7 +187,7 @@ class Data implements StageInterface
                 'mt.entity_id = supl.parent_id',
                 [$entityIdName => 'product_id']
             )
-            ->joinInner(
+            ->joinLeft(
                 ['pint' => $this->source->addDocumentPrefix('catalog_product_entity_int')],
                 'pint.entity_id = supl.product_id and pint.attribute_id = sup_a.attribute_id ' .
                 ' and pint.value = sup_ap.value_index and pint.store_id = sup_ap.website_id',
@@ -195,6 +195,7 @@ class Data implements StageInterface
             )
             ->where('mt.entity_id in (?)', $entitiesExpr)
             ->where('mt.attribute_id = ?', $priceAttributeId)
+            ->group(['supl.product_id', 'sup_ap.website_id'])
         ;
         return $select;
     }
